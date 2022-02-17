@@ -1,0 +1,24 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<form action="/profile" method="POST" id="search-form">
+    {{ profileform.csrf_token }}
+    <div class="column">
+
+        <div class="col-auto">{{ profileform.picture.label(class="form-label") }}
+                {{ profileform.picture(class="form-control")}}</div>
+        
+        <div class="col-auto">{{ profileform.f_name.label(class="form-label") }}
+            {{ profileform.f_name(class="form-control") }}</div>
+
+        <div class="col-auto">{{ profileform.l_name.label(class="form-label") }}
+            {{ profileform.l_name(class="form-control") }}</div>
+
+        <br>
+
+        <div class="col-auto mt-auto">{{ profileform.submit(class="btn btn-primary") }}</div>
+
+    </div>
+
+</form>
+
+{% endblock %}

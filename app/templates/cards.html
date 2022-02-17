@@ -1,0 +1,36 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<form action="/add_alarm" method="POST" id="search-form">
+    {{ cardform.csrf_token }}
+    <div class="column">
+        
+        <div class="col-auto">{{ cardform.vendor.label(class="form-label") }}
+            {{ cardform.vendor(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.model.label(class="form-label") }}
+            {{ cardform.model(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.module.label(class="form-label") }}
+            {{ cardform.module(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.alarm_id.label(class="form-label") }}
+            {{ cardform.alarm_id(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.title.label(class="form-label") }}
+            {{ cardform.title(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.message.label(class="form-label") }}
+            {{ cardform.message(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.cause.label(class="form-label") }}
+            {{ cardform.cause(class="form-control") }}</div>
+
+        <div class="col-auto">{{ cardform.response.label(class="form-label") }}
+            {{ cardform.response(class="form-control") }}</div>
+        </br>
+        <div class="col-auto mt-auto">{{ cardform.submit(class="btn btn-primary") }}</div>
+    </div>
+
+</form>
+
+{% endblock %}

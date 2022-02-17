@@ -1,0 +1,128 @@
+{% extends "search_base.html" %}
+{% block content %}
+
+    {% if posts %}
+
+        {% if posts.alarm_card %}
+        <section id="alarm-card-container">
+        <table id="alarm-card" class="table table-bordered">
+            <thead >
+                <tr>
+                    <th colspan="3" class="h4">Alarm Card</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th rowspan="2">Alarm ID:</th><td rowspan="2">{{ posts.alarm_card.alarm_id }}</td><th>Title</th>
+                </tr>
+                <tr>
+                    <td>{{ posts.alarm_card.title }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">Message</th><td>{{ posts.alarm_card.message }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">Cause</th><td>{{ posts.alarm_card.cause }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">Response</th><td>{{ posts.alarm_card.response }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-secondary">Notice: The above details are a general representation of the alarm details
+                        listed at the equipment and may be slightly different when viewing at the equipment.</td>
+                </tr>
+            </tfoot>
+        </table>
+        </section>
+        {% endif %}
+
+        {% if posts.posts %}
+            <section id="posts-container">
+            <header>
+                <p class="text-danger">The entries below are to be used as a general guide for troubleshooting alarms.</p>
+            </header>
+            {% for post in posts.posts %}
+
+                <article class="post">
+                    <header>
+                        <h4>{{ post.f_name.title() }} {{ post.l_name.title() }}</h4>
+                        <span>{{ post.created }}</span>
+                    </header>
+                    <div>
+                        <p>
+                            {{ post.content }}
+                        </p>
+                    </div>
+                </article>
+
+            {% endfor %}
+            </section>
+        {% endif %}
+
+        {% if not current_user.is_anonymous and posts.alarm_card %}
+        <section>
+            <form action="/add_post" method="POST">
+                {{ addPostForm.csrf_token }}
+                {{ addPostForm.user_id }}
+                {{ addPostForm.idalarm }}
+                <div class="col-auto">{{ addPostForm.entry.label(class="form-label") }}
+                    {{ addPostForm.entry(class="form-control") }}</div>
+                <br>
+                <div class="col-auto mt-auto">{{ addPostForm.submit(class="btn btn-primary") }}</div>
+            </form>
+        </section>
+        {% endif %}
+
+        {% if posts.parts %}
+            <section id="parts-container">
+            <p class="text-secondary">List of all parts ordered to recover this specific alarm. Each alarm will not need all parts listed.
+                Use best judgement when ordering parts.</p>
+            <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Q-Number</th>
+                        <th>Vendor PN</th>
+                        <th>Description</th>
+                        <th>Stock</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-striped">
+                {% for part in posts.parts %}
+                    <tr>
+                        <td>{{ part.q_number.title() }}</td>
+                        <td>{{ part.vendor_pn.upper() }}</td>
+                        <td>{{ part.description }}</td>
+                        <td>{{ part.stock }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% if not current_user.is_anonymous and posts.alarm_card %}
+                <section>
+                    <form action="/add_part" method="POST">
+                        {{ addPartForm.csrf_token }}
+                        {{ addPartForm.idalarm }}
+                        <div class="col-auto">
+                            {{ addPartForm.q_number.label(class="form-label")}}
+                            {{ addPartForm.q_number }}
+                        </div>
+                        <div class="col-auto">
+                            {{ addPartForm.vendor_pn.label(class="form-label")}}
+                            {{ addPartForm.vendor_pn }}
+                        </div>
+                        <div class="col-auto">
+                            {{ addPartForm.description.label(class="form-label")}}
+                            {{ addPartForm.description }}
+                        </div>
+                        <br>
+                        <div class="col-auto mt-auto">{{ addPartForm.submit(class="btn btn-primary") }}</div>
+                    </form>
+                </section>
+            {% endif %}
+            </section>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
