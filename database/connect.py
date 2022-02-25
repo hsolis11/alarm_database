@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DATABASE = os.getcwd() + "/test.db"
+DATABASE = os.path.join('database/test.db')
 
 
 def get_connection():
@@ -14,7 +14,7 @@ class StoreException(Exception):
         self.errors = errors
 
 
-class BaseRepo:
+class BaseConnection:
     def __init__(self):
         try:
             self.conn = get_connection()
