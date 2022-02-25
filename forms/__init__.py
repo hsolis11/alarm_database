@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import SelectField, StringField, TextAreaField, SubmitField, PasswordField, BooleanField
 from wtforms.fields.simple import FileField, HiddenField
 from wtforms.validators import DataRequired, Length, ValidationError, EqualTo
-from alarm_guide import manager # TODO: dependency injection?
+from database import EqpModels, EqpModules, Users
 
 
 class SearchForm(FlaskForm):
@@ -14,17 +14,16 @@ class SearchForm(FlaskForm):
     search = SubmitField('Search')
 
     def fill_model(self, choice=1, all=False):
-        model_choices = [(x[0], x[1]) for x in manager.get(f"SELECT * FROM eqp_models WHERE vendor = {choice}")]
+        model_choices = [(x.idmodel, x.model) for x in EqpModels().get_list(vendor=choice)]
         if all:
             model_choices.insert(0, ('all', 'ALL'))
         self.model.choices = model_choices
-
 
     def fill_module(self, choice=1, all=False, only_all=False):
         if only_all:
             module_choices = [('all', 'ALL')]
         else:
-            module_choices = [(x[0], x[1]) for x in manager.get(f"SELECT * FROM eqp_modules WHERE eqp_model = {choice}")]
+            module_choices = [(x.idmodule, x.module) for x in EqpModules().get_list(model=choice)]
             if all:
                 module_choices.insert(0, ('all', 'ALL'))
         self.module.choices = module_choices
@@ -46,9 +45,10 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_tech_id(self, tech_id):
-        result = manager.get(f"SELECT tech_id FROM tech WHERE tech_id = '{tech_id}' ")
+        result = Users().get(tech_id=tech_id)
         if result:
             raise ValidationError('That TechID is already registered. Click forgot password')
+
 
 class CreateAlarmCard(FlaskForm):
     vendor = SelectField('Vendor:', choices=[('1', 'SEMES'), ('2', 'TEL')])
@@ -62,10 +62,11 @@ class CreateAlarmCard(FlaskForm):
     submit = SubmitField('Create')
 
     def fill_model(self, choice=1):
-        self.model.choices = [(x[0], x[1]) for x in manager.get(f"SELECT * FROM eqp_models WHERE vendor = {choice}")]
+        self.model.choices = [(x.idmodel, x.model) for x in EqpModels().get_list(vendor=choice)]
 
     def fill_module(self, choice=1):
-        self.module.choices = [(x[0], x[1]) for x in manager.get(f"SELECT * FROM eqp_modules WHERE eqp_model = {choice}")]
+        self.module.choices = [(x.idmodule, x.module) for x in EqpModules().get_list(model=choice)]
+
 
 class UpdateProfileForm(FlaskForm):
     f_name = StringField('First Name', validators=[DataRequired()])
@@ -73,11 +74,13 @@ class UpdateProfileForm(FlaskForm):
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Update')
 
+
 class AddPostForm(FlaskForm):
     user_id = HiddenField()
     entry = TextAreaField('Add Quick Entry:')
     idalarm = HiddenField()
     submit = SubmitField('Post')
+
 
 class AddPartForm(FlaskForm):
     idalarm = HiddenField()
