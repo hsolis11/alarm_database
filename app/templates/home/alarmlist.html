@@ -12,9 +12,9 @@
         {% for alarm in alarms.alarms %}
             <tr>
                 <td><form action="/" method="POST">
-                    <input type="hidden" value={{ alarm.vendor_id }} name="vendor">
-                    <input type="hidden" value={{ alarm.model_id }} name="model">
-                    <input type="hidden" value={{ alarm.module_id }} name="module">
+                    <input type="hidden" value={{ alarm.idvendor }} name="vendor">
+                    <input type="hidden" value={{ alarm.idmodel }} name="model">
+                    <input type="hidden" value={{ alarm.idmodule }} name="module">
                     <input type="hidden" value={{ alarm.alarm_id }} name="alarm_id">
                     <button type="submit" class="btn btn-light">{{ alarm.alarm_id }}</button>
                 </form></td>
